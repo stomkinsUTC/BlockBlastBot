@@ -41,20 +41,24 @@ namespace BlockBlastBot
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
-            InitializeGrid();
-
+            InitialiseDisplay();
         }
-        
         #endregion
 
-        private void InitializeGrid()
+        private void InitialiseDisplay()
+        {
+            InitialiseGrid();
+            InitialisePieces();
+        }
+
+        private void InitialiseGrid()
         {
             // Dimensions of the grid and squares
             int gridSize = 8;
             int squareSize = 50; // Size of each square in pixels
             int padding = 2; // Space between squares
-            int edgePadding = 40; //Padding around the game board
-            int gamePiecePadding = 200; //Padding to fit the three gamne pieces
+            int edgePadding = 160; //Padding around the game board
+            int gamePiecePadding = 200; //Padding to fit the three game pieces
 
             // Set the form size based on the grid
             this.ClientSize = new Size(
@@ -63,7 +67,41 @@ namespace BlockBlastBot
             );
             this.Text = "BlockBlastBot";
 
-            // Loop to create theint row = 0; row < gridSize; row++)
+            // Loop to create the grid
+
+            for (int col = 0; col < gridSize; col++)
+            {
+                for (int row = 0; row < gridSize; row++)
+                {
+                    // Create a new panel for each square
+                    Panel square = new Panel
+                    {
+                        Size = new Size(squareSize, squareSize),
+                        BackColor = GameBoard.GetColour(row, col),
+                        Location = new Point(
+                        col * (squareSize + padding) + edgePadding,
+                        row * (squareSize + padding)
+                    )
+                    };
+
+                    // Add the square to the form
+                    this.Controls.Add(square);
+                }
+            }
+
+        }
+
+        private void InitialisePieces()
+        {
+            // Dimensions of the grid and squares
+            int gridSize = 8;
+            int squareSize = 25; // Size of each square in pixels
+            int padding = 1; // Space between squares
+            int edgePadding = 56; //Padding around the game board
+            int boardpadding = 441; //Padding to cover the game board
+            int piecePadding = 208; //Padding so the pieces don't overlap
+
+            for (int piece = 0; piece < GameBoard.pieceColours.Length; piece++)
             {
                 for (int col = 0; col < gridSize; col++)
                 {
@@ -73,10 +111,10 @@ namespace BlockBlastBot
                         Panel square = new Panel
                         {
                             Size = new Size(squareSize, squareSize),
-                            BackColor = Color.Blue,
+                            BackColor = GameBoard.GetPieceColour(piece, row, col),
                             Location = new Point(
-                            col * (squareSize + padding) + edgePadding,
-                            row * (squareSize + padding)
+                            col * (squareSize + padding) + edgePadding + (piecePadding * piece),
+                            row * (squareSize + padding) + boardpadding
                         )
                         };
 
