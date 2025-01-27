@@ -118,7 +118,7 @@ namespace BlockBlastBot
                 {
                     if (GameBoard.currentPieces[piece][i][j])
                     {
-                        displayGrid[row + i][col + j].BackColor = GameBoard.pieceColours[piece];
+                        displayGrid[col + j][row + i].BackColor = GameBoard.pieceColours[piece];
                     }
                 }
             }
@@ -134,11 +134,11 @@ namespace BlockBlastBot
                 AddPiece(0, fits[0][0], fits[0][1]);
             }
 
-            /*Debug.WriteLine("Fits found at:");
+            Debug.WriteLine("Fits found at:");
             foreach (var fit in fits)
             {
-                Debug.WriteLine($"Row: {fit.Item1}, Col: {fit.Item2}");
-            }*/
+                Debug.WriteLine($"Row: {fit[0]}, Col: {fit[1]}");
+            }
         }
     }
 }

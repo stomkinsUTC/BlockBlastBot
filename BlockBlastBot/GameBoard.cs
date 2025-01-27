@@ -30,9 +30,9 @@ namespace BlockBlastBot
         {
         new List<List<bool>>
         {
-            new List<bool> {true, true, true, true, true},
-            new List<bool> {false, true, false, false, false},
-            new List<bool> {false, true, false, false, false}
+            new List<bool> {true, true, true, true, true, true},
+            new List<bool> {false, true, false, false, false, false},
+            new List<bool> {false, true, false, false, false, false}
         },
         new List<List<bool>>
         {
