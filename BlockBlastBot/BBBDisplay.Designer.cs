@@ -31,99 +31,60 @@ namespace BlockBlastBot
         /// </summary>
         private void InitializeComponent()
         {
+            this.solveButton = new System.Windows.Forms.Button();
+            this.scanButton = new System.Windows.Forms.Button();
+            this.instructionLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // Form1
+            // solveButton
+            // 
+            this.solveButton.Location = new System.Drawing.Point(12, 689);
+            this.solveButton.Name = "solveButton";
+            this.solveButton.Size = new System.Drawing.Size(75, 23);
+            this.solveButton.TabIndex = 0;
+            this.solveButton.Text = "Solve";
+            this.solveButton.UseVisualStyleBackColor = true;
+            this.solveButton.Click += new System.EventHandler(this.SolveProblem);
+            // 
+            // scanButton
+            // 
+            this.scanButton.Location = new System.Drawing.Point(12, 660);
+            this.scanButton.Name = "scanButton";
+            this.scanButton.Size = new System.Drawing.Size(75, 23);
+            this.scanButton.TabIndex = 1;
+            this.scanButton.Text = "Scan";
+            this.scanButton.UseVisualStyleBackColor = true;
+            // 
+            // instructionLabel
+            // 
+            this.instructionLabel.AutoSize = true;
+            this.instructionLabel.Location = new System.Drawing.Point(94, 669);
+            this.instructionLabel.Name = "instructionLabel";
+            this.instructionLabel.Size = new System.Drawing.Size(44, 39);
+            this.instructionLabel.TabIndex = 2;
+            this.instructionLabel.Text = "Step 1: \r\nStep 2: \r\nStep 3: ";
+            // 
+            // BBBDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Name = "Form1";
+            this.ClientSize = new System.Drawing.Size(800, 724);
+            this.Controls.Add(this.instructionLabel);
+            this.Controls.Add(this.scanButton);
+            this.Controls.Add(this.solveButton);
+            this.Name = "BBBDisplay";
             this.Text = "Form1";
             this.ResumeLayout(false);
-            InitialiseDisplay();
+            this.PerformLayout();
+
         }
         #endregion
 
-        private void InitialiseDisplay()
-        {
-            InitialiseGrid();
-            InitialisePieces();
-        }
+       
 
-        private void InitialiseGrid()
-        {
-            // Dimensions of the grid and squares
-            int gridSize = 8;
-            int squareSize = 50; // Size of each square in pixels
-            int padding = 2; // Space between squares
-            int edgePadding = 160; //Padding around the game board
-            int gamePiecePadding = 200; //Padding to fit the three game pieces
-
-            // Set the form size based on the grid
-            this.ClientSize = new Size(
-                gridSize * (squareSize + padding) + edgePadding * 2,
-                gridSize * (squareSize + padding) + edgePadding + gamePiecePadding
-            );
-            this.Text = "BlockBlastBot";
-
-            // Loop to create the grid
-
-            for (int col = 0; col < gridSize; col++)
-            {
-                for (int row = 0; row < gridSize; row++)
-                {
-                    // Create a new panel for each square
-                    Panel square = new Panel
-                    {
-                        Size = new Size(squareSize, squareSize),
-                        BackColor = GameBoard.GetColour(row, col),
-                        Location = new Point(
-                        col * (squareSize + padding) + edgePadding,
-                        row * (squareSize + padding)
-                    )
-                    };
-
-                    // Add the square to the form
-                    this.Controls.Add(square);
-                }
-            }
-
-        }
-
-        private void InitialisePieces()
-        {
-            // Dimensions of the grid and squares
-            int gridSize = 8;
-            int squareSize = 25; // Size of each square in pixels
-            int padding = 1; // Space between squares
-            int edgePadding = 56; //Padding around the game board
-            int boardpadding = 441; //Padding to cover the game board
-            int piecePadding = 208; //Padding so the pieces don't overlap
-
-            for (int piece = 0; piece < GameBoard.pieceColours.Length; piece++)
-            {
-                for (int col = 0; col < gridSize; col++)
-                {
-                    for (int row = 0; row < gridSize; row++)
-                    {
-                        // Create a new panel for each square
-                        Panel square = new Panel
-                        {
-                            Size = new Size(squareSize, squareSize),
-                            BackColor = GameBoard.GetPieceColour(piece, row, col),
-                            Location = new Point(
-                            col * (squareSize + padding) + edgePadding + (piecePadding * piece),
-                            row * (squareSize + padding) + boardpadding
-                        )
-                        };
-
-                        // Add the square to the form
-                        this.Controls.Add(square);
-                    }
-                }
-            }
-        }
+        private Button solveButton;
+        private Button scanButton;
+        private Label instructionLabel;
     }
 }
 

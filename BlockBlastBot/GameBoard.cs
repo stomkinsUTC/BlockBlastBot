@@ -26,20 +26,13 @@ namespace BlockBlastBot
             { true, false, false, false, false, false, false, true }
             };
 
-        //Initialised with sample data for now.
-        /*public static bool[,,] currentPieces = {
-            { { true, true }, { true, false }, { true, true } },
-            { { true, true}, { true, true }, { false, false } },
-            { { true, true}, { true, true }, { true, true } }
-            };*/
-
         public static List<List<List<bool>>> currentPieces = new List<List<List<bool>>>
         {
         new List<List<bool>>
         {
-            new List<bool> {true, true, true},
-            new List<bool> {false, true, false},
-            new List<bool> {false, true, false}
+            new List<bool> {true, true, true, true, true},
+            new List<bool> {false, true, false, false, false},
+            new List<bool> {false, true, false, false, false}
         },
         new List<List<bool>>
         {
@@ -54,14 +47,6 @@ namespace BlockBlastBot
             new List<bool> {true, true, true}
         }
         };
-
-        /*List<(int, int)> fits = GameBoard.FindAllFits(gameArea, currentPiece);
-
-        Debug.WriteLine("Fits found at:");
-        foreach (var fit in fits)
-        {
-            Debug.WriteLine($"Row: {fit.Item1}, Col: {fit.Item2}");
-        }*/
 
         //Returns the correct colour based on whether the cell is filled
         public static Color GetColour(int row, int col)
@@ -87,13 +72,13 @@ namespace BlockBlastBot
             return pieceFalseColour;
         }
 
-        public static List<(int, int)> FindAllFits(bool[,] gameBoard, bool[,] currentPiece)
+        public static List<List<int>> FindAllFits(bool[,] gameBoard, List<List<bool>> currentPiece)
         {
-            List<(int, int)> fits = new List<(int, int)>();
+            List<List<int>> fits = new List<List<int>>();
             int boardRows = gameBoard.GetLength(0);
             int boardCols = gameBoard.GetLength(1);
-            int pieceRows = currentPiece.GetLength(0);
-            int pieceCols = currentPiece.GetLength(1);
+            int pieceRows = currentPiece.Count();
+            int pieceCols = currentPiece[0].Count();
 
             // Loop through each starting position in gameBoard
             for (int startRow = 0; startRow <= boardRows - pieceRows; startRow++)
@@ -102,7 +87,10 @@ namespace BlockBlastBot
                 {
                     if (CanFit(gameBoard, currentPiece, startRow, startCol))
                     {
-                        fits.Add((startRow, startCol));
+                        List<int> temp = new List<int>();
+                        temp.Add(startRow);
+                        temp.Add(startCol);
+                        fits.Add(temp);
                     }
                 }
             }
@@ -110,17 +98,17 @@ namespace BlockBlastBot
             return fits;
         }
 
-        private static bool CanFit(bool[,] gameBoard, bool[,] currentPiece, int startRow, int startCol)
+        private static bool CanFit(bool[,] gameBoard, List<List<bool>> currentPiece, int startRow, int startCol)
         {
-            int pieceRows = currentPiece.GetLength(0);
-            int pieceCols = currentPiece.GetLength(1);
+            int pieceRows = currentPiece.Count();
+            int pieceCols = currentPiece[0].Count();
 
             // Check every cell in the currentPiece
             for (int row = 0; row < pieceRows; row++)
             {
                 for (int col = 0; col < pieceCols; col++)
                 {
-                    if (currentPiece[row, col] && gameBoard[startRow + row, startCol + col])
+                    if (currentPiece[row][col] && gameBoard[startRow + row, startCol + col])
                     {
                         return false; // Conflict: currentPiece can't fit here
                     }
