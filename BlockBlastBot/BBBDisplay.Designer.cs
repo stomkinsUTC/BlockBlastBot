@@ -44,7 +44,7 @@ namespace BlockBlastBot
             InitializeGrid();
 
         }
-
+        
         #endregion
 
         private void InitializeGrid()
