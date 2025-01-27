@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace BlockBlastBot
 {
-    public partial class Form1 : Form
+    public partial class BBBDisplay : Form
     {
-        public Form1()
+        public BBBDisplay()
         {
             InitializeComponent();
         }
