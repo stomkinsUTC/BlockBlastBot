@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AForge.Video;
+using AForge.Video.DirectShow;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -28,6 +30,28 @@ namespace BlockBlastBot
         {
             InitialiseGrid();
             InitialisePieces();
+            InitialiseCamera();
+        }
+
+        private void InitialiseCamera()
+        {
+            FilterInfoCollection fic;
+            VideoCaptureDevice vcd;
+
+            fic = new FilterInfoCollection(FilterCategory.VideoCompressorCategory);
+            foreach (FilterInfo fi in fic)
+            {
+                comboBox1.Items.Add(fi.Name);
+            }
+            comboBox1.SelectedIndex = 0;
+            vcd = new VideoCaptureDevice();
+            vcd = new VideoCaptureDevice(fic[comboBox1.SelectedIndex].MonikerString);
+            vcd.NewFrame += VideoCaptureDevice_NewFrame;
+        }
+
+        private void VideoCaptureDevice_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        {
+            pictureBox1.Image = (Bitmap)eventArgs.Frame.Clone();
         }
 
         private void InitialiseGrid()
