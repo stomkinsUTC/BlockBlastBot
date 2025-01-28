@@ -21,8 +21,7 @@ namespace BlockBlastBot
         {
         new List<List<bool>>
         {
-            new List<bool> {true, true, true, true, true, true, true, false},
-            new List<bool> {false, true, false, false, false, false, false, false}
+            new List<bool> {true, true, true, true}
         },
         new List<List<bool>>
         {
@@ -51,9 +50,28 @@ namespace BlockBlastBot
             }
         }
 
-        public void ClearRows()
+        private void DebugDisplayBoard()
         {
-            List<int> colToClear = new List<int>();
+            Debug.WriteLine("Current board:");
+            foreach (List<bool> lb in gameArea)
+            {
+                foreach (bool b in lb)
+                {
+                    Debug.Write(b + " ");
+                }
+                Debug.WriteLine(" ");
+            }
+        }
+
+        public void ClearBoard()
+        {
+            ClearRows();
+            ClearCols();
+            DebugDisplayBoard();
+        }
+
+        private void ClearRows()
+        {
             List<int> rowToClear = new List<int>();
 
             for (int i = 0; i < gameArea.Count; i++)
@@ -71,6 +89,24 @@ namespace BlockBlastBot
                     rowToClear.Add(i);
                 }
             }
+            foreach (int i in rowToClear)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    gameArea[i][j] = false;
+                    BBBDisplay.ResetCellColour(j, i);
+                }
+            }
+            /*Debug.WriteLine("Rows to clear:");
+            foreach (int i in rowToClear)
+            {
+                Debug.WriteLine(i);
+            }*/
+        }
+
+        private void ClearCols()
+        {
+            List<int> colToClear = new List<int>();
 
             for (int i = 0; i < gameArea.Count; i++)
             {
@@ -84,32 +120,33 @@ namespace BlockBlastBot
                     colToClear.Add(i);
                 }
             }
-            foreach (int i in rowToClear)
+            foreach (int i in colToClear)
             {
                 for (int j = 0; j < 8; j++)
                 {
                     gameArea[j][i] = false;
-                    BBBDisplay.ResetCellColour(j, i);
-                }
-            }
-            foreach (int i in colToClear)
-            {
-                for (int j = 0; j < 8; j++)
-                {
-                    gameArea[i][j] = false;
                     BBBDisplay.ResetCellColour(i, j);
                 }
             }
-            /*Debug.WriteLine("Rows to clear:");
-            foreach (int i in rowToClear)
-            {
-                Debug.WriteLine(i);
-            }
-            Debug.WriteLine("Cols to clear:");
+            /*Debug.WriteLine("Cols to clear:");
             foreach (int i in colToClear)
             {
                 Debug.WriteLine(i);
             }*/
+        }
+
+        //Default piece size is 8*8, this trims it down to actual size.
+        //Not sure if this will be needed, leaving it just in-case.
+        private List<List<bool>> TrimPiece(int piece)
+        {
+            List<List<bool>> temp = currentPieces[piece];
+
+            while (!temp[temp.Count-1].Contains(true))
+            {
+                temp.RemoveAt(temp.Count-1);
+            }
+
+            return temp;
         }
 
         //Returns the correct colour based on whether the cell is filled

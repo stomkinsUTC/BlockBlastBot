@@ -125,7 +125,7 @@ namespace BlockBlastBot
                     }
                 }
             }
-            gameBoard.ClearRows();
+            gameBoard.ClearBoard();
         }
 
         public static void ResetCellColour(int row, int col)
@@ -141,15 +141,16 @@ namespace BlockBlastBot
 
             if (fits.Count > 0)
             {
+                Debug.WriteLine("Placing at " + fits[0][0] + ", " + fits[0][1]);
                 AddPiece(0, fits[0][0], fits[0][1]);
             }
             //THIS IS DEBUG, TESTING ONLY
 
-            Debug.WriteLine("Fits found at:");
+            /*Debug.WriteLine("Fits found at:");
             foreach (var fit in fits)
             {
                 Debug.WriteLine($"Row: {fit[0]}, Col: {fit[1]}");
-            }
+            }*/
         }
     }
 }
