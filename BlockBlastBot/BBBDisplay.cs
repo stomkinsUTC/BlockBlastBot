@@ -19,6 +19,7 @@ namespace BlockBlastBot
 
         public BBBDisplay()
         {
+            DebugSetSampleBoard();
             InitializeComponent();
             InitialiseDisplay();
         }
@@ -112,45 +113,95 @@ namespace BlockBlastBot
 
         //Visually adds the piece and updates the gameArea.
         //No idea why the grid seems to be rotated here...
-        private void AddPiece(int piece, int row, int col)
-        {
-            for (int i = 0; i < gameBoard.currentPieces[piece].Count; i++)
-            {
-                for (int j = 0; j < gameBoard.currentPieces[piece][i].Count; j++)
-                {
-                    if (gameBoard.currentPieces[piece][i][j])
-                    {
-                        displayGrid[col + j][row + i].BackColor = GameBoard.pieceColours[piece];
-                        gameBoard.gameArea[row + i][col + j] = true;
-                    }
-                }
-            }
-            gameBoard.ClearBoard();
-        }
+        
 
         public static void ResetCellColour(int row, int col)
         {
             displayGrid[row][col].BackColor = GameBoard.falseColour;
         }
 
+        private void UpdateUI()
+        {
+            for (int i = 0; i < gameBoard.gameArea.Count; i++)
+            {
+                for (int j = 0; j < gameBoard.gameArea[i].Count; j++)
+                {
+                    if (gameBoard.gameArea[i][j])
+                    {
+                        displayGrid[j][i].BackColor = GameBoard.trueColour;
+                    }
+                    else
+                    {
+                        displayGrid[j][i].BackColor = GameBoard.falseColour;
+                    }
+                }
+            }
+
+            for (int i = 0; i < gameBoard.currentPieces.Count; i++)
+            {
+                for (int j = 0; j < gameBoard.gameArea.Count; j++)
+                {
+                    for (int k = 0; k < gameBoard.gameArea[0].Count; k++)
+                    {
+                        displayPieces[i][k][j].BackColor = GameBoard.pieceFalseColour;
+                    }
+                }
+                for (int j = 0; j < gameBoard.currentPieces[i].Count; j++)
+                {
+                    for (int k = 0; k < gameBoard.currentPieces[i][j].Count; k++)
+                    {
+                        if (gameBoard.currentPieces[i][j][k])
+                        {
+                            displayPieces[i][k][j].BackColor = GameBoard.pieceColours[i];
+                        }
+                    }
+                }
+            }
+        }
+
 
         private void SolveProblem(object sender, EventArgs e)
         {
-            //THIS IS DEBUG, TESTING ONLY
-            List<List<int>> fits = GameBoard.FindAllFits(gameBoard.gameArea, gameBoard.currentPieces[0]);
+            List<List<int>> fits = gameBoard.FindAllFits(gameBoard.gameArea, gameBoard.currentPieces[0]);
 
             if (fits.Count > 0)
             {
+                GameBoard tempBoard = (GameBoard) gameBoard.Clone();
+
+
+
                 Debug.WriteLine("Placing at " + fits[0][0] + ", " + fits[0][1]);
-                AddPiece(0, fits[0][0], fits[0][1]);
+                gameBoard.AddPiece(0, fits[0][0], fits[0][1]);
             }
-            //THIS IS DEBUG, TESTING ONLY
+
+
+
+
+            UpdateUI();
+
+
 
             /*Debug.WriteLine("Fits found at:");
             foreach (var fit in fits)
             {
                 Debug.WriteLine($"Row: {fit[0]}, Col: {fit[1]}");
             }*/
+        }
+
+        //Sample board
+        private void DebugSetSampleBoard()
+        {
+            gameBoard.gameArea = new List<List<bool>>{
+                new List<bool> {false, false, false, true, true, false, false, true},
+                new List<bool> {false, true, true, true, false, true, false, true},
+                new List<bool> {true, true, false, true, false, true, true, true},
+                new List<bool> {true, false, false, true, true, false, true, true},
+                new List<bool> {true, true, false, false, false, false, false, false},
+                new List<bool> {true, false, false, false, true, true, false, false},
+                new List<bool> {true, true, false, true, false, false, true, false},
+                new List<bool> {true, false, false, false, false, false, true, true}
+            };
+
         }
     }
 }

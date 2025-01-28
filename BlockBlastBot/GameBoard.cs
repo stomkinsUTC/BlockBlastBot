@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace BlockBlastBot
 {
-    public class GameBoard
+    public class GameBoard : ICloneable
     {
         public readonly static Color trueColour = Color.Blue;
         public readonly static Color falseColour = Color.Gray;
         public readonly static Color pieceFalseColour = Color.LightGray;
-        public readonly static Color[] pieceColours = {Color.Red, Color.Green, Color.Purple};
+        public readonly static Color[] pieceColours = { Color.Red, Color.Green, Color.Purple };
 
         public List<List<bool>> gameArea = new List<List<bool>>();
 
@@ -21,19 +21,15 @@ namespace BlockBlastBot
         {
         new List<List<bool>>
         {
-            new List<bool> {true, true, true, true}
+            new List<bool> {true}
         },
         new List<List<bool>>
         {
-            new List<bool> {false, true, false},
-            new List<bool> {false, true, false},
-            new List<bool> {false, true, false},
-            new List<bool> {false, true, false},
-            new List<bool> {false, true, false}
+            new List<bool> {true}
         },
         new List<List<bool>>
         {
-            new List<bool> {true, true, true}
+            new List<bool> {true}
         }
         };
 
@@ -48,6 +44,43 @@ namespace BlockBlastBot
                 }
                 gameArea.Add(bools);
             }
+            DebugSetSamplePieces();
+        }
+
+        public object Clone()
+        {
+            List<List<bool>> cloneGameArea = new List<List<bool>>();
+            for (int i = 0; i < gameArea.Count; i++)
+            {
+                List<bool> temp = new List<bool>();
+                for (int j = 0; j < gameArea[0].Count; j++)
+                {
+                    temp.Add(gameArea[i][j]);
+                }
+                cloneGameArea.Add(temp);
+            }
+
+            List<List<List<bool>>> clonePieces = new List<List<List<bool>>>();
+            for (int i = 0; i < currentPieces.Count; i++)
+            {
+                List<List<bool>> tempPiece = new List<List<bool>>();
+                for (int j = 0; j < currentPieces[i].Count; j++)
+                {
+                    List<bool> tempRow = new List<bool>();
+                    for (int k = 0; k < currentPieces[i][j].Count; k++)
+                    {
+                        tempRow.Add(currentPieces[i][j][k]);
+                    }
+                    tempPiece.Add(tempRow);
+                }
+                clonePieces.Add(tempPiece);
+            }
+
+            return new GameBoard
+            {
+                gameArea = cloneGameArea,
+                currentPieces = clonePieces
+            };
         }
 
         private void DebugDisplayBoard()
@@ -63,7 +96,7 @@ namespace BlockBlastBot
             }
         }
 
-        public void ClearBoard()
+        public void ClearLines()
         {
             ClearRows();
             ClearCols();
@@ -141,9 +174,9 @@ namespace BlockBlastBot
         {
             List<List<bool>> temp = currentPieces[piece];
 
-            while (!temp[temp.Count-1].Contains(true))
+            while (!temp[temp.Count - 1].Contains(true))
             {
-                temp.RemoveAt(temp.Count-1);
+                temp.RemoveAt(temp.Count - 1);
             }
 
             return temp;
@@ -173,7 +206,7 @@ namespace BlockBlastBot
             return pieceFalseColour;
         }
 
-        public static List<List<int>> FindAllFits(List<List<bool>> gameBoard, List<List<bool>> currentPiece)
+        public List<List<int>> FindAllFits(List<List<bool>> gameBoard, List<List<bool>> currentPiece)
         {
             List<List<int>> fits = new List<List<int>>();
             int boardRows = gameBoard.Count;
@@ -199,7 +232,7 @@ namespace BlockBlastBot
             return fits;
         }
 
-        private static bool CanFit(List<List<bool>> gameBoard, List<List<bool>> currentPiece, int startRow, int startCol)
+        private bool CanFit(List<List<bool>> gameBoard, List<List<bool>> currentPiece, int startRow, int startCol)
         {
             int pieceRows = currentPiece.Count();
             int pieceCols = currentPiece[0].Count();
@@ -216,6 +249,46 @@ namespace BlockBlastBot
                 }
             }
             return true; // Fits without conflict
+        }
+
+        public void AddPiece(int piece, int row, int col)
+        {
+            for (int i = 0; i < currentPieces[piece].Count; i++)
+            {
+                for (int j = 0; j < currentPieces[piece][i].Count; j++)
+                {
+                    if (currentPieces[piece][i][j])
+                    {
+                        //displayGrid[col + j][row + i].BackColor = GameBoard.pieceColours[piece];
+                        gameArea[row + i][col + j] = true;
+                    }
+                }
+            }
+            ClearLines();
+        }
+
+        //Sample pieces
+        private void DebugSetSamplePieces()
+        {
+            currentPieces = new List<List<List<bool>>>
+        {
+        new List<List<bool>>
+        {
+            new List<bool> {true, true, true},
+            new List<bool> {false, true, false}
+        },
+        new List<List<bool>>
+        {
+            new List<bool> {false, true},
+            new List<bool> {true, true},
+            new List<bool> {false, true}
+        },
+        new List<List<bool>>
+        {
+            new List<bool> {false, false, true},
+            new List<bool> {true, true, true}
+        }
+            };
         }
     }
 }
