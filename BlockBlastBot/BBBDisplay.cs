@@ -157,76 +157,126 @@ namespace BlockBlastBot
                     }
                 }
             }
+            gameBoard.ClearLines();
         }
 
 
+        //Checks all combinations of orders of pieces.
         private void SolveProblem(object sender, EventArgs e)
         {
+            List<List<int>> placeOrders = new List<List<int>>()
+            {
+                new List<int>{ 0, 1, 2 },
+                new List<int>{ 0, 2, 1 },
+                new List<int>{ 1, 0, 2 },
+                new List<int>{ 1, 2, 0 },
+                new List<int>{ 2, 0, 1 },
+                new List<int>{ 2, 1, 0 }
+            };
             List<PieceOrder> solutions = new List<PieceOrder>();
 
-            List<List<int>> piece1Fits = gameBoard.FindAllFits(gameBoard.gameArea, gameBoard.currentPieces[0]);
-            for (int piece1 = 0; piece1 < piece1Fits.Count; piece1++)
+            foreach(List<int> pO in placeOrders)
             {
-                GameBoard piece1Board = (GameBoard)gameBoard.Clone();
-                piece1Board.AddPiece(0, piece1Fits[piece1][0], piece1Fits[piece1][1]);
-
-                List<List<int>> piece2Fits = piece1Board.FindAllFits(piece1Board.gameArea, piece1Board.currentPieces[1]);
-                for (int piece2 = 0; piece2 < piece2Fits.Count; piece2++)
+                List<List<int>> piece1Fits = gameBoard.FindAllFits(gameBoard.gameArea, gameBoard.currentPieces[pO[0]]);
+                for (int piece1 = 0; piece1 < piece1Fits.Count; piece1++)
                 {
-                    GameBoard piece2Board = (GameBoard) piece1Board.Clone();
-                    piece2Board.AddPiece(1, piece2Fits[piece2][0], piece2Fits[piece2][1]);
+                    GameBoard piece1Board = (GameBoard)gameBoard.Clone();
+                    piece1Board.AddPiece(pO[0], piece1Fits[piece1][0], piece1Fits[piece1][1]);
 
-                    List<List<int>> piece3Fits = gameBoard.FindAllFits(piece2Board.gameArea, piece2Board.currentPieces[0]);
-                    for (int piece3 = 0; piece3 < piece3Fits.Count; piece3++)
+                    List<List<int>> piece2Fits = piece1Board.FindAllFits(piece1Board.gameArea, piece1Board.currentPieces[pO[1]]);
+                    for (int piece2 = 0; piece2 < piece2Fits.Count; piece2++)
                     {
-                        GameBoard piece3Board = (GameBoard) piece2Board.Clone();
-                        piece3Board.AddPiece(2, piece3Fits[piece3][0], piece3Fits[piece3][1]);
+                        GameBoard piece2Board = (GameBoard)piece1Board.Clone();
+                        piece2Board.AddPiece(pO[1], piece2Fits[piece2][0], piece2Fits[piece2][1]);
 
-                        //Stores the valid placement as a PieceOrder object.
-                        PieceOrder tempOrder = new PieceOrder();
-                        tempOrder.order.Add(0);
-                        tempOrder.order.Add(1);
-                        tempOrder.order.Add(2);
+                        List<List<int>> piece3Fits = gameBoard.FindAllFits(piece2Board.gameArea, piece2Board.currentPieces[pO[2]]);
+                        for (int piece3 = 0; piece3 < piece3Fits.Count; piece3++)
+                        {
+                            GameBoard piece3Board = (GameBoard)piece2Board.Clone();
+                            piece3Board.AddPiece(pO[2], piece3Fits[piece3][0], piece3Fits[piece3][1]);
 
-                        tempOrder.coordinates.Add(new List<int>() { piece1Fits[piece1][0], piece1Fits[piece1][1] });
-                        tempOrder.coordinates.Add(new List<int>() { piece2Fits[piece2][0], piece2Fits[piece2][1] });
-                        tempOrder.coordinates.Add(new List<int>() { piece3Fits[piece3][0], piece3Fits[piece3][1] });
+                            //Stores the valid placement as a PieceOrder object.
+                            PieceOrder tempOrder = new PieceOrder();
+                            tempOrder.order.Add(pO[0]);
+                            tempOrder.order.Add(pO[1]);
+                            tempOrder.order.Add(pO[2]);
 
-                        tempOrder.totalFree = piece3Board.GetTotalFree();
+                            tempOrder.coordinates.Add(new List<int>() { piece1Fits[piece1][0], piece1Fits[piece1][1] });
+                            tempOrder.coordinates.Add(new List<int>() { piece2Fits[piece2][0], piece2Fits[piece2][1] });
+                            tempOrder.coordinates.Add(new List<int>() { piece3Fits[piece3][0], piece3Fits[piece3][1] });
 
-                        solutions.Add(tempOrder);
+                            tempOrder.totalFree = piece3Board.GetTotalFree();
+
+                            solutions.Add(tempOrder);
+                        }
                     }
                 }
-
-                for (int i = 0; i < solutions.Count; i++)
-                {
-                    Debug.WriteLine("Solution " + i + ": " + solutions[i].totalFree + " free slots.");
-                }
-
-
-
-
-
-
-                
-                
-
-
-                Debug.WriteLine("Place piece " + 1 + " at: " + piece1Fits[piece1][0] + ", " + piece1Fits[piece1][1]);
             }
-
-
-
-
-            UpdateUI();
-
-
-
-            /*Debug.WriteLine("Fits found at:");
-            foreach (var fit in fits)
+            //Rearrange the list to be in ascending order.
+            //Higher number of free spaces is better.
+            solutions = solutions.OrderBy(o=>o.totalFree).ToList();
+            for (int i = 0; i < solutions.Count; i++)
             {
-                Debug.WriteLine($"Row: {fit[0]}, Col: {fit[1]}");
-            }*/
+                Debug.WriteLine("Solution: " + i + ": " + solutions[i].totalFree + " free slots.");
+            }
+            if (solutions.Count > 0)
+            {
+                UpdateUI();
+                Debug.WriteLine("Chosen solution: " + solutions[solutions.Count-1].totalFree + " free slots.");
+                DisplaySteps(solutions[solutions.Count - 1]);
+            }
+            else
+            {
+                DisplaySteps(new PieceOrder());
+            }
+            
+        }
+
+        private void ClearRows(object sender, EventArgs e)
+        {
+            for (int i = 0; i < gameBoard.gameArea.Count; i++)
+            {
+                for (int j = 0; j < gameBoard.gameArea[0].Count; j++)
+                {
+                    if (displayGrid[j][i].BackColor != GameBoard.trueColour && displayGrid[j][i].BackColor != GameBoard.falseColour)
+                    {
+                        gameBoard.gameArea[i][j] = true;
+                    }
+                }
+            }
+            UpdateUI();
+        }
+
+        private void DisplaySteps(PieceOrder stepsToTake)
+        {
+            if (stepsToTake.coordinates.Count > 0)
+            {
+                for (int pieces = 0; pieces < gameBoard.currentPieces.Count; pieces++)
+                {
+                    for (int i = 0; i < gameBoard.currentPieces[stepsToTake.order[pieces]].Count; i++)
+                    {
+                        for (int j = 0; j < gameBoard.currentPieces[stepsToTake.order[pieces]][0].Count; j++)
+                        {
+                            if (gameBoard.currentPieces[stepsToTake.order[pieces]][i][j])
+                            {
+                                displayGrid[stepsToTake.coordinates[pieces][1] + j][stepsToTake.coordinates[pieces][0] + i].BackColor = GameBoard.pieceColours[stepsToTake.order[pieces]];
+                            }
+                        }
+                    }
+                }
+                
+
+                instructionLabel.Text = "Step 1: Place piece " + (stepsToTake.order[0] + 1) + " at X: " +
+                    (stepsToTake.coordinates[0][1] + 1) + ", Y: " + (stepsToTake.coordinates[0][0] + 1) +
+                    "\nStep 2: Place piece " + (stepsToTake.order[1] + 1) + " at X: " +
+                    (stepsToTake.coordinates[1][1] + 1) + ", Y: " + (stepsToTake.coordinates[1][0] + 1) +
+                    "\nStep 3: Place piece " + (stepsToTake.order[2] + 1) + " at X: " +
+                    (stepsToTake.coordinates[2][1] + 1) + ", Y: " + (stepsToTake.coordinates[2][0] + 1);
+            }
+            else
+            {
+                instructionLabel.Text = "No solution found!";
+            }
         }
 
         //Sample board

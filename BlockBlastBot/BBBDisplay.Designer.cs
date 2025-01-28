@@ -34,6 +34,7 @@ namespace BlockBlastBot
             this.solveButton = new System.Windows.Forms.Button();
             this.scanButton = new System.Windows.Forms.Button();
             this.instructionLabel = new System.Windows.Forms.Label();
+            this.clearButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // solveButton
@@ -64,11 +65,22 @@ namespace BlockBlastBot
             this.instructionLabel.TabIndex = 2;
             this.instructionLabel.Text = "Step 1: \r\nStep 2: \r\nStep 3: ";
             // 
+            // clearButton
+            // 
+            this.clearButton.Location = new System.Drawing.Point(13, 719);
+            this.clearButton.Name = "clearButton";
+            this.clearButton.Size = new System.Drawing.Size(75, 23);
+            this.clearButton.TabIndex = 3;
+            this.clearButton.Text = "ClearLines";
+            this.clearButton.UseVisualStyleBackColor = true;
+            this.clearButton.Click += new System.EventHandler(this.ClearRows);
+            // 
             // BBBDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 724);
+            this.ClientSize = new System.Drawing.Size(800, 759);
+            this.Controls.Add(this.clearButton);
             this.Controls.Add(this.instructionLabel);
             this.Controls.Add(this.scanButton);
             this.Controls.Add(this.solveButton);
@@ -85,6 +97,7 @@ namespace BlockBlastBot
         private Button solveButton;
         private Button scanButton;
         private Label instructionLabel;
+        private Button clearButton;
     }
 }
 

@@ -259,7 +259,6 @@ namespace BlockBlastBot
                 {
                     if (currentPieces[piece][i][j])
                     {
-                        //displayGrid[col + j][row + i].BackColor = GameBoard.pieceColours[piece];
                         gameArea[row + i][col + j] = true;
                     }
                 }
@@ -303,6 +302,29 @@ namespace BlockBlastBot
         new List<List<bool>>
         {
             new List<bool> {false, false, true},
+            new List<bool> {true, true, true}
+        }
+            };
+        }
+
+        private void DebugSetSamplePieces2()
+        {
+            currentPieces = new List<List<List<bool>>>
+        {
+        new List<List<bool>>
+        {
+            new List<bool> {true, true, true},
+            new List<bool> {true, true, true}
+        },
+        new List<List<bool>>
+        {
+            new List<bool> {true, true},
+            new List<bool> {true, true},
+            new List<bool> {true, true}
+        },
+        new List<List<bool>>
+        {
+            new List<bool> {true, true, true},
             new List<bool> {true, true, true}
         }
             };
