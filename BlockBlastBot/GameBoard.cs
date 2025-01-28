@@ -48,6 +48,11 @@ namespace BlockBlastBot
         }
         };
 
+        public static void ClearRows()
+        {
+            //Flag rows and cols to clear, then clear after.
+        }
+
         //Returns the correct colour based on whether the cell is filled
         public static Color GetColour(int row, int col)
         {

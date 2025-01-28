@@ -122,7 +122,9 @@ namespace BlockBlastBot
                     }
                 }
             }
+            GameBoard.ClearRows();
         }
+
 
         private void SolveProblem(object sender, EventArgs e)
         {
