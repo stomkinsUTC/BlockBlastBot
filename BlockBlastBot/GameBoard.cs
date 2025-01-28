@@ -100,7 +100,7 @@ namespace BlockBlastBot
         {
             ClearRows();
             ClearCols();
-            DebugDisplayBoard();
+            //DebugDisplayBoard();
         }
 
         private void ClearRows()
@@ -265,6 +265,23 @@ namespace BlockBlastBot
                 }
             }
             ClearLines();
+        }
+
+        public int GetTotalFree()
+        {
+            int totalFree = 0;
+            foreach(List<bool> lb in gameArea)
+            {
+                foreach (bool b in lb)
+                {
+                    if (!b)
+                    {
+                        totalFree++;
+                    }
+                }
+            }
+
+            return totalFree;
         }
 
         //Sample pieces

@@ -162,16 +162,57 @@ namespace BlockBlastBot
 
         private void SolveProblem(object sender, EventArgs e)
         {
-            List<List<int>> fits = gameBoard.FindAllFits(gameBoard.gameArea, gameBoard.currentPieces[0]);
+            List<PieceOrder> solutions = new List<PieceOrder>();
 
-            if (fits.Count > 0)
+            List<List<int>> piece1Fits = gameBoard.FindAllFits(gameBoard.gameArea, gameBoard.currentPieces[0]);
+            for (int piece1 = 0; piece1 < piece1Fits.Count; piece1++)
             {
-                GameBoard tempBoard = (GameBoard) gameBoard.Clone();
+                GameBoard piece1Board = (GameBoard)gameBoard.Clone();
+                piece1Board.AddPiece(0, piece1Fits[piece1][0], piece1Fits[piece1][1]);
+
+                List<List<int>> piece2Fits = piece1Board.FindAllFits(piece1Board.gameArea, piece1Board.currentPieces[1]);
+                for (int piece2 = 0; piece2 < piece2Fits.Count; piece2++)
+                {
+                    GameBoard piece2Board = (GameBoard) piece1Board.Clone();
+                    piece2Board.AddPiece(1, piece2Fits[piece2][0], piece2Fits[piece2][1]);
+
+                    List<List<int>> piece3Fits = gameBoard.FindAllFits(piece2Board.gameArea, piece2Board.currentPieces[0]);
+                    for (int piece3 = 0; piece3 < piece3Fits.Count; piece3++)
+                    {
+                        GameBoard piece3Board = (GameBoard) piece2Board.Clone();
+                        piece3Board.AddPiece(2, piece3Fits[piece3][0], piece3Fits[piece3][1]);
+
+                        //Stores the valid placement as a PieceOrder object.
+                        PieceOrder tempOrder = new PieceOrder();
+                        tempOrder.order.Add(0);
+                        tempOrder.order.Add(1);
+                        tempOrder.order.Add(2);
+
+                        tempOrder.coordinates.Add(new List<int>() { piece1Fits[piece1][0], piece1Fits[piece1][1] });
+                        tempOrder.coordinates.Add(new List<int>() { piece2Fits[piece2][0], piece2Fits[piece2][1] });
+                        tempOrder.coordinates.Add(new List<int>() { piece3Fits[piece3][0], piece3Fits[piece3][1] });
+
+                        tempOrder.totalFree = piece3Board.GetTotalFree();
+
+                        solutions.Add(tempOrder);
+                    }
+                }
+
+                for (int i = 0; i < solutions.Count; i++)
+                {
+                    Debug.WriteLine("Solution " + i + ": " + solutions[i].totalFree + " free slots.");
+                }
 
 
 
-                Debug.WriteLine("Placing at " + fits[0][0] + ", " + fits[0][1]);
-                gameBoard.AddPiece(0, fits[0][0], fits[0][1]);
+
+
+
+                
+                
+
+
+                Debug.WriteLine("Place piece " + 1 + " at: " + piece1Fits[piece1][0] + ", " + piece1Fits[piece1][1]);
             }
 
 

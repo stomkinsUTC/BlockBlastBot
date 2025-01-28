@@ -53,6 +53,7 @@
       <DependentUpon>BBBDisplay.cs</DependentUpon>
     </Compile>
     <Compile Include="GameBoard.cs" />
+    <Compile Include="PieceOrder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="BBBDisplay.resx">
