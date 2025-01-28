@@ -15,6 +15,7 @@ namespace BlockBlastBot
     {
         private static List<List<Panel>> displayGrid = new List<List<Panel>>();
         private static List<List<List<Panel>>> displayPieces = new List<List<List<Panel>>>();
+        GameBoard gameBoard = new GameBoard();
 
         public BBBDisplay()
         {
@@ -55,13 +56,12 @@ namespace BlockBlastBot
                     Panel square = new Panel
                     {
                         Size = new Size(squareSize, squareSize),
-                        BackColor = GameBoard.GetColour(row, col),
+                        BackColor = gameBoard.GetColour(row, col),
                         Location = new Point(
                         col * (squareSize + padding) + edgePadding,
                         row * (squareSize + padding)
                     )
                     };
-
                     // Add the square to the form
                     this.Controls.Add(square);
                     panelList.Add(square);
@@ -93,7 +93,7 @@ namespace BlockBlastBot
                         Panel square = new Panel
                         {
                             Size = new Size(squareSize, squareSize),
-                            BackColor = GameBoard.GetPieceColour(piece, row, col),
+                            BackColor = gameBoard.GetPieceColour(piece, row, col),
                             Location = new Point(
                             col * (squareSize + padding) + edgePadding + (piecePadding * piece),
                             row * (squareSize + padding) + boardpadding
@@ -110,31 +110,40 @@ namespace BlockBlastBot
             }
         }
 
+        //Visually adds the piece and updates the gameArea.
+        //No idea why the grid seems to be rotated here...
         private void AddPiece(int piece, int row, int col)
         {
-            for (int i = 0; i < GameBoard.currentPieces[piece].Count; i++)
+            for (int i = 0; i < gameBoard.currentPieces[piece].Count; i++)
             {
-                for (int j = 0; j < GameBoard.currentPieces[piece][i].Count; j++)
+                for (int j = 0; j < gameBoard.currentPieces[piece][i].Count; j++)
                 {
-                    if (GameBoard.currentPieces[piece][i][j])
+                    if (gameBoard.currentPieces[piece][i][j])
                     {
                         displayGrid[col + j][row + i].BackColor = GameBoard.pieceColours[piece];
+                        gameBoard.gameArea[row + i][col + j] = true;
                     }
                 }
             }
-            GameBoard.ClearRows();
+            gameBoard.ClearRows();
+        }
+
+        public static void ResetCellColour(int row, int col)
+        {
+            displayGrid[row][col].BackColor = GameBoard.falseColour;
         }
 
 
         private void SolveProblem(object sender, EventArgs e)
         {
             //THIS IS DEBUG, TESTING ONLY
-            List<List<int>> fits = GameBoard.FindAllFits(GameBoard.gameArea, GameBoard.currentPieces[0]);
+            List<List<int>> fits = GameBoard.FindAllFits(gameBoard.gameArea, gameBoard.currentPieces[0]);
 
-            if (fits != null)
+            if (fits.Count > 0)
             {
                 AddPiece(0, fits[0][0], fits[0][1]);
             }
+            //THIS IS DEBUG, TESTING ONLY
 
             Debug.WriteLine("Fits found at:");
             foreach (var fit in fits)
