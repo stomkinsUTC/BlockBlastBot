@@ -19,6 +19,10 @@ namespace BlockBlastBot
         private static List<List<List<Panel>>> displayPieces = new List<List<List<Panel>>>();
         GameBoard gameBoard = new GameBoard();
 
+        private FilterInfoCollection fic;
+        private VideoCaptureDevice vcd;
+        private bool isScanning = false;
+
         public BBBDisplay()
         {
             DebugSetSampleBoard();
@@ -35,23 +39,20 @@ namespace BlockBlastBot
 
         private void InitialiseCamera()
         {
-            FilterInfoCollection fic;
-            VideoCaptureDevice vcd;
-
-            fic = new FilterInfoCollection(FilterCategory.VideoCompressorCategory);
+            fic = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             foreach (FilterInfo fi in fic)
             {
-                comboBox1.Items.Add(fi.Name);
+                camSelector.Items.Add(fi.Name);
             }
-            comboBox1.SelectedIndex = 0;
+            camSelector.SelectedIndex = 0;
             vcd = new VideoCaptureDevice();
-            vcd = new VideoCaptureDevice(fic[comboBox1.SelectedIndex].MonikerString);
+            vcd = new VideoCaptureDevice(fic[camSelector.SelectedIndex].MonikerString);
             vcd.NewFrame += VideoCaptureDevice_NewFrame;
         }
 
         private void VideoCaptureDevice_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
-            pictureBox1.Image = (Bitmap)eventArgs.Frame.Clone();
+            camOutput.Image = (Bitmap)eventArgs.Frame.Clone();
         }
 
         private void InitialiseGrid()
@@ -317,6 +318,35 @@ namespace BlockBlastBot
                 new List<bool> {true, false, false, false, false, false, true, true}
             };
 
+        }
+
+        private void scanPressed(object sender, EventArgs e)
+        {
+            if (!isScanning)
+            {
+                vcd = new VideoCaptureDevice(fic[camSelector.SelectedIndex].MonikerString);
+                vcd.NewFrame += new NewFrameEventHandler(VideoCaptureDevice_NewFrame);
+                //vcd.DesiredFrameSize = new Size(320, 240);
+                vcd.Start();
+                isScanning = true;
+                scanButton.Text = "Stop";
+            }
+            else
+            {
+                CloseVideoSource();
+                isScanning=false;
+                scanButton.Text = "Scan";
+            }
+        }
+
+        private void CloseVideoSource()
+        {
+            if (!(vcd == null))
+                if (vcd.IsRunning)
+                {
+                    vcd.SignalToStop();
+                    vcd = null;
+                }
         }
     }
 }

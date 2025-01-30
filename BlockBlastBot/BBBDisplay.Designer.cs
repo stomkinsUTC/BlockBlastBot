@@ -35,9 +35,9 @@ namespace BlockBlastBot
             this.scanButton = new System.Windows.Forms.Button();
             this.instructionLabel = new System.Windows.Forms.Label();
             this.clearButton = new System.Windows.Forms.Button();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.camSelector = new System.Windows.Forms.ComboBox();
+            this.camOutput = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.camOutput)).BeginInit();
             this.SuspendLayout();
             // 
             // solveButton
@@ -58,6 +58,7 @@ namespace BlockBlastBot
             this.scanButton.TabIndex = 1;
             this.scanButton.Text = "Scan";
             this.scanButton.UseVisualStyleBackColor = true;
+            this.scanButton.Click += new System.EventHandler(this.scanPressed);
             // 
             // instructionLabel
             // 
@@ -78,36 +79,36 @@ namespace BlockBlastBot
             this.clearButton.UseVisualStyleBackColor = true;
             this.clearButton.Click += new System.EventHandler(this.ClearRows);
             // 
-            // comboBox1
+            // camSelector
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(595, 12);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 4;
+            this.camSelector.FormattingEnabled = true;
+            this.camSelector.Location = new System.Drawing.Point(595, 12);
+            this.camSelector.Name = "camSelector";
+            this.camSelector.Size = new System.Drawing.Size(121, 21);
+            this.camSelector.TabIndex = 4;
             // 
-            // pictureBox1
+            // camOutput
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(595, 40);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(121, 110);
-            this.pictureBox1.TabIndex = 5;
-            this.pictureBox1.TabStop = false;
+            this.camOutput.Location = new System.Drawing.Point(595, 40);
+            this.camOutput.Name = "camOutput";
+            this.camOutput.Size = new System.Drawing.Size(300, 400);
+            this.camOutput.TabIndex = 5;
+            this.camOutput.TabStop = false;
             // 
             // BBBDisplay
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 759);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.comboBox1);
+            this.ClientSize = new System.Drawing.Size(916, 759);
+            this.Controls.Add(this.camOutput);
+            this.Controls.Add(this.camSelector);
             this.Controls.Add(this.clearButton);
             this.Controls.Add(this.instructionLabel);
             this.Controls.Add(this.scanButton);
             this.Controls.Add(this.solveButton);
             this.Name = "BBBDisplay";
             this.Text = "Form1";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.camOutput)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -120,8 +121,8 @@ namespace BlockBlastBot
         private Button scanButton;
         private Label instructionLabel;
         private Button clearButton;
-        private ComboBox comboBox1;
-        private PictureBox pictureBox1;
+        private ComboBox camSelector;
+        private PictureBox camOutput;
     }
 }
 
