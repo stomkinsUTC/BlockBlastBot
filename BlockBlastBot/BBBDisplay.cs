@@ -326,7 +326,7 @@ namespace BlockBlastBot
             {
                 vcd = new VideoCaptureDevice(fic[camSelector.SelectedIndex].MonikerString);
                 vcd.NewFrame += new NewFrameEventHandler(VideoCaptureDevice_NewFrame);
-                //vcd.DesiredFrameSize = new Size(320, 240);
+                vcd.VideoResolution = vcd.VideoCapabilities[0];
                 vcd.Start();
                 isScanning = true;
                 scanButton.Text = "Stop";
